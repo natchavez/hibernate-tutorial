@@ -1,10 +1,12 @@
 package com.nathaniel.hibernate.onetoone.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -18,6 +20,12 @@ public class InstructorDetail {
 
     @Column(name = "youtube_channel")
     private String youtubeChannel;
+
+    // add new field for instructor for bi-directional
+    // @OneToOne(mappedBy="instructorDetail", cascade=CascadeType.ALL)
+    @OneToOne(mappedBy = "instructorDetail", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+            CascadeType.REFRESH })
+    private Instructor instructor;
 
     @Column(name = "hobby")
     private String hobby;
@@ -52,6 +60,14 @@ public class InstructorDetail {
 
     public void setHobby(String hobby) {
         this.hobby = hobby;
+    }
+
+    public Instructor getInstructor() {
+        return instructor;
+    }
+
+    public void setInstructor(Instructor instructor) {
+        this.instructor = instructor;
     }
 
     @Override
