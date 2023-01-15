@@ -8,6 +8,7 @@ import java.util.Scanner;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 
 import com.nathaniel.hibernate.practice.entity.Employee;
 
@@ -74,19 +75,15 @@ public class App {
         session.getTransaction().commit();
         
         // find out the student's id: primary key
-        viewDetails("POST",session.createQuery("from Employee").getResultList());
+        viewDetails("POST",session.createQuery("from Employee"));
         System.out.println("Saved employee. Generated id: " + employee.getId() + "\nDone!");
     }
 
     public static void readMethod(Session session, int idToView) {
-        List<Employee> employees = new ArrayList<>();
         session.beginTransaction();
-        if(idToView == 0) {
-            employees = session.createQuery("from Employee").getResultList();
-        } else {
-            employees = session.createQuery("from Employee s where s.id='" + idToView + "'").getResultList();
-        }
-        viewDetails("GET",employees);
+        Query<Employee> query = (idToView == 0) ? session.createQuery("from Employee")
+                : session.createQuery("from Employee s where s.id='" + idToView + "'");
+        viewDetails("GET", query);
 
     }
 
@@ -98,7 +95,7 @@ public class App {
         
         session = factory.getCurrentSession();
         session.beginTransaction();
-        viewDetails("PUT",session.createQuery("from Employee").getResultList());
+        viewDetails("PUT",session.createQuery("from Employee"));
     }
 
     public static void deleteMethod(Session session, int idToDelete) {
@@ -109,7 +106,7 @@ public class App {
         
         session = factory.getCurrentSession();
         session.beginTransaction();
-        viewDetails("DELETE",session.createQuery("from Employee").getResultList());
+        viewDetails("DELETE", session.createQuery("from Employee"));
 
     }
     
@@ -124,7 +121,8 @@ public class App {
 
     }
     
-    private static void viewDetails(String requestType, List<Employee> employees) {
+    private static void viewDetails(String requestType, Query<Employee> query) {
+        List<Employee> employees = query.getResultList();
         System.out.println("\n\nResult from " + requestType + ": ");
         for(Employee e: employees) {
             System.out.println(e);
