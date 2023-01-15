@@ -19,12 +19,13 @@
   </properties>
 
   <dependencies>
-	<!-- log back-->
+	<!-- log back
 	<dependency>
 	    <groupId>ch.qos.logback</groupId>
 	    <artifactId>logback-classic</artifactId>
 	    <version>1.2.7</version>
 	</dependency>
+	-->
   	<!-- mysql connector j -->
   	<dependency>
 	  <groupId>com.mysql</groupId>
