@@ -11,6 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -31,9 +33,18 @@ public class Course {
     @JoinColumn(name = "instructor_id")
     private Instructor instructor;
 
-    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name="course_id")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "course_id")
     private List<Review> reviews;
+
+    @ManyToMany(fetch = FetchType.LAZY, 
+            cascade = { CascadeType.PERSIST, CascadeType.MERGE, 
+                    CascadeType.DETACH, CascadeType.REFRESH })
+    @JoinTable(
+            name = "course_student", 
+            joinColumns = @JoinColumn(name = "course_id"), 
+            inverseJoinColumns = @JoinColumn(name = "student_id"))
+    private List<Student> students;
 
     public Course() {
 
@@ -76,11 +87,26 @@ public class Course {
         this.reviews = reviews;
     }
 
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
+    }
+
     public void add(Review theReview) {
         if (reviews == null) {
             reviews = new ArrayList<>();
         }
         reviews.add(theReview);
+    }
+
+    public void add(Student theStudent) {
+        if (students == null) {
+            students = new ArrayList<>();
+        }
+        students.add(theStudent);
     }
 
     @Override

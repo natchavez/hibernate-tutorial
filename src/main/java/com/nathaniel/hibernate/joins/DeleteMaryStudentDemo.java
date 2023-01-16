@@ -7,8 +7,10 @@ import org.hibernate.cfg.Configuration;
 import com.nathaniel.hibernate.joins.entity.Course;
 import com.nathaniel.hibernate.joins.entity.Instructor;
 import com.nathaniel.hibernate.joins.entity.InstructorDetail;
+import com.nathaniel.hibernate.joins.entity.Review;
+import com.nathaniel.hibernate.joins.entity.Student;
 
-public class EagerLazyDemo {
+public class DeleteMaryStudentDemo {
 
     public static void main(String[] args) {
         SessionFactory factory = new Configuration()
@@ -16,6 +18,8 @@ public class EagerLazyDemo {
                                 .addAnnotatedClass(Instructor.class)
                                 .addAnnotatedClass(InstructorDetail.class)
                                 .addAnnotatedClass(Course.class)
+                                .addAnnotatedClass(Review.class)
+                                .addAnnotatedClass(Student.class)
                                 .buildSessionFactory();
         Session session = factory.getCurrentSession();
 
@@ -23,20 +27,17 @@ public class EagerLazyDemo {
 
             session.beginTransaction();
 
-            int theId = 1;
-            Instructor tempInstructor = session.get(Instructor.class, theId);
-
-            System.out.println("Instructor: " + tempInstructor);
-
-            System.out.println("Courses: " + tempInstructor.getCourses());
+            // get the student mary from database
+            int maryId = 2;
+            Student mary = session.get(Student.class, maryId);
+            System.out.println("\nLoaded student: " + mary);
+            System.out.println("Course: " + mary.getCourses());
+            
+            // delete student
+            System.out.println("\nDeleting student: " + mary);
+            session.delete(mary);
 
             session.getTransaction().commit();
-
-            // close the session
-            session.close();
-            System.out.println("\nThe session is now closed!\n");
-            System.out.println("Courses: " + tempInstructor.getCourses());
-
             System.out.println("Done!");
         } finally {
             session.close();

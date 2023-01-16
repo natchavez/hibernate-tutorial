@@ -8,8 +8,9 @@ import com.nathaniel.hibernate.joins.entity.Course;
 import com.nathaniel.hibernate.joins.entity.Instructor;
 import com.nathaniel.hibernate.joins.entity.InstructorDetail;
 import com.nathaniel.hibernate.joins.entity.Review;
+import com.nathaniel.hibernate.joins.entity.Student;
 
-public class DeleteCourseAndReviewsDemo {
+public class DeletePacmanCourseDemo {
 
     public static void main(String[] args) {
         SessionFactory factory = new Configuration()
@@ -18,6 +19,7 @@ public class DeleteCourseAndReviewsDemo {
                                 .addAnnotatedClass(InstructorDetail.class)
                                 .addAnnotatedClass(Course.class)
                                 .addAnnotatedClass(Review.class)
+                                .addAnnotatedClass(Student.class)
                                 .buildSessionFactory();
         Session session = factory.getCurrentSession();
 
@@ -25,20 +27,12 @@ public class DeleteCourseAndReviewsDemo {
 
             session.beginTransaction();
 
-            // get the course
-            int theId=10;
-            Course tempCourse = session.get(Course.class, theId);
-            
-            // print the course
-            System.out.println("Deleting the course ...");
-            System.out.println(tempCourse);
-            
+            // get the pacman course from db
+            Course pacmanCourse = session.get(Course.class, 10);
+            System.out.println("Deleting course: " + pacmanCourse);
+            session.delete(pacmanCourse);
             // delete the course
-            session.delete(tempCourse);
-            
-            // print the course reviews
-            System.out.println(tempCourse.getReviews());
-            
+
             session.getTransaction().commit();
             System.out.println("Done!");
         } finally {

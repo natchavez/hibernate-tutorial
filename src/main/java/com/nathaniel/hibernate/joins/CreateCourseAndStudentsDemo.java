@@ -8,8 +8,9 @@ import com.nathaniel.hibernate.joins.entity.Course;
 import com.nathaniel.hibernate.joins.entity.Instructor;
 import com.nathaniel.hibernate.joins.entity.InstructorDetail;
 import com.nathaniel.hibernate.joins.entity.Review;
+import com.nathaniel.hibernate.joins.entity.Student;
 
-public class GetCourseAndReviewsDemo {
+public class CreateCourseAndStudentsDemo {
 
     public static void main(String[] args) {
         SessionFactory factory = new Configuration()
@@ -18,6 +19,7 @@ public class GetCourseAndReviewsDemo {
                                 .addAnnotatedClass(InstructorDetail.class)
                                 .addAnnotatedClass(Course.class)
                                 .addAnnotatedClass(Review.class)
+                                .addAnnotatedClass(Student.class)
                                 .buildSessionFactory();
         Session session = factory.getCurrentSession();
 
@@ -25,15 +27,28 @@ public class GetCourseAndReviewsDemo {
 
             session.beginTransaction();
 
-            // get the course
-            int theId=10;
-            Course tempCourse = session.get(Course.class, theId);
-            // print the course
-            System.out.println(tempCourse);
-            
-            // print the course reviews
-            System.out.println(tempCourse.getReviews());
-            
+            // create course
+            Course tempCourse = new Course("Pacman - How To Score One Million Points");
+
+            // save the course ... and leverage the cascade all
+            System.out.println("\nSaving the course");
+            session.save(tempCourse);
+            System.out.println("Saved the course: " + tempCourse);
+
+            // create the students
+            Student tempStudent1 = new Student("John", "Doe", "john@luv2code.com");
+            Student tempStudent2 = new Student("Mary", "Republic", "mary@luv2code.com");
+
+            // add student to the course
+            tempCourse.add(tempStudent1);
+            tempCourse.add(tempStudent2);
+
+            // save the students
+            System.out.println("\nSaving students ... ");
+            session.save(tempStudent1);
+            session.save(tempStudent2);
+            System.out.println("Saved Students: " + tempCourse.getStudents());
+
             session.getTransaction().commit();
             System.out.println("Done!");
         } finally {
